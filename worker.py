@@ -29,7 +29,10 @@ def dequeue(i: int, q: Queue):
         queue_event = q.get()
         iter_backends = queue_event.backends.get()
         for backend in iter_backends:
-            backend.dispatch_security_alert(queue_event.event)
+            errors = backend.dispatch_security_alert(queue_event.event)
+            if len(errors):
+                for e in errors:
+                    print(e.get_message())
             """
             in a real world application we should log errors returned by dispatch_security_alert
             this logger would have to be able to manage concurrent accesses
